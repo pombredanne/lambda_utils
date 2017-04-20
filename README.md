@@ -1,2 +1,2 @@
-# python-utils
+# python_utils
 Python utility functions
