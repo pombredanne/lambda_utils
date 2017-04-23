@@ -12,10 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from __future__ import print_function
 import fire
 import datetime
-from dateutil import parser
 from dateutil.relativedelta import relativedelta, SA
 
 def date_str_2_obj(date_str):
@@ -38,14 +38,22 @@ def get_last_saturday_str():
 def timedelta_2_hours(duration):
     """
     >>> timedelta_2_hours(datetime.timedelta(hours=1))
-    1
+    1.0
     """
     days, seconds = duration.days, duration.seconds
     hours = days * 24 + seconds / 3600.0
     return round(hours, 3)
 
+def parse_date_str(date_str):
+    """
+    >>> parse_date_str('2017-01-01')
+    datetime.datetime(2017, 1, 1, 0, 0)
+    """
+    return datetime.datetime.strptime(date_str, '%Y-%m-%d')
+
 def calc_duration(start_date_str, end_date_str):
-    return timedelta_2_hours(parser.parse(end_date_str) - parser.parse(start_date_str))
+
+    return timedelta_2_hours(parse_date_str(end_date_str) - parse_date_str(start_date_str))
 
 def add_days_to_date_str(date_str, num_days):
     """
@@ -54,9 +62,16 @@ def add_days_to_date_str(date_str, num_days):
     >>> add_days_to_date_str('2017-01-01', -2)
     '2016-12-30'
     """
-    date_obj = parser.parse(date_str)
-    new_date = date_obj + datetime.timedelta(days=num_days)
+    date_obj = parse_date_str(date_str)
+    new_date = add_days_to_date(date_obj, num_days)
     return new_date.strftime('%Y-%m-%d')
+
+def add_days_to_date(date_obj, num_days):
+    """
+    >>> add_days_to_date(datetime.datetime(2017, 1, 1), 2)
+    datetime.datetime(2017, 1, 3, 0, 0)
+    """
+    return date_obj + datetime.timedelta(days=num_days)
 
 def test(verbose=False):
     import doctest
