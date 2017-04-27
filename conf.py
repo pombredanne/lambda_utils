@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.6
 # Copyright 2016 Brigham Young University
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from __future__ import print_function
 import os
 import fire
@@ -33,10 +34,9 @@ def load_config(file_name):
     if 'RUNNING_IN_LAMBDA' in os.environ:
         config = decrypt_s3_vars(file_name)
     else:
-        config = yaml.load(open(os.path.expanduser('~/.byu/{}'.format(file_name))).read())
+        with open(file_name) as fobj:
+            config = yaml.load(fobj.read())
     return config
-
-config = load_config()
 
 def decrypt_s3_vars(secrets_bucket_name, file_name):
     obj = s3.Object(secrets_bucket_name, file_name)

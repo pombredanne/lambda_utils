@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.6
 # Copyright 2016 Brigham Young University
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

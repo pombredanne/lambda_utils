@@ -14,23 +14,14 @@
 # limitations under the License.
 
 from __future__ import print_function
+import os
 import fire
-import subprocess
+import yaml
+import boto3
+import tempfile
 
-def _output(cmd):
-    """
-    >>> _output('echo "testing"')
-    b'testing\\n'
-    """
-    return subprocess.check_output(cmd, shell=True)
-
-def _shell(cmd):
-    """
-    >>> _shell('echo ""')
-    Running \"echo \"\"\"...
-    """
-    print('Running "{}"...'.format(cmd))
-    subprocess.check_call(cmd, shell=True)
+def deploy():
+    pass
 
 def test(verbose=False):
     import doctest

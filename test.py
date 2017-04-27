@@ -13,28 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
+import unittest
+import doctest
+import cal
+import conf
 import fire
-import subprocess
+import shell
 
-def _output(cmd):
-    """
-    >>> _output('echo "testing"')
-    b'testing\\n'
-    """
-    return subprocess.check_output(cmd, shell=True)
+def load_tests(loader, tests, ignore):
+    tests.addTests(doctest.DocTestSuite(cal))
+    tests.addTests(doctest.DocTestSuite(conf))
+    tests.addTests(doctest.DocTestSuite(shell))
+    return tests
 
-def _shell(cmd):
-    """
-    >>> _shell('echo ""')
-    Running \"echo \"\"\"...
-    """
-    print('Running "{}"...'.format(cmd))
-    subprocess.check_call(cmd, shell=True)
-
-def test(verbose=False):
-    import doctest
-    doctest.testmod(verbose=verbose)
+def test(verbosity=1):
+    verbosity = int(verbosity)
+    unittest.main(verbosity=verbosity)
 
 if __name__ == '__main__':
-    fire.Fire()
+    fire.Fire(test)
