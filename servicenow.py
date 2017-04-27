@@ -19,8 +19,13 @@ import requests
 
 def get(sn_url, username, password):
     """
-    >>> config = conf.load_config('servicenow.prd', ['url'])
-    >>> #TODO add test
+    >>> sn = conf.load_config('servicenow.tst', ['url'])
+    >>> user = conf.load_config('servicenow.prd', ['username', 'password'])
+    >>> rows = get(sn['url'], user['username'], user['password'])
+    >>> len(rows) > 1
+    True
+    >>> all(['sys_id' in row for row in rows])
+    True
     """
     result = []
     response = requests.get(sn_url, auth=(username, password))
