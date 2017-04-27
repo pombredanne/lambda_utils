@@ -13,20 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
 import sys
 import json
 import requests
-import config_mod
+import conf
 from functools import wraps
 import byu_ws_sdk as byu_ws
 from datetime import datetime
 
-config = config_mod.load_config()
+config = conf.load_config('timekeeper', ['api_key', 'shared_secret'])
 
 def api_key_header(url, method, actor_net_id):
     return byu_ws.get_http_authorization_header(
-            config.tk_api_key, config.tk_shared_secret,
+            config['api_key'], config['shared_secret'],
             byu_ws.KEY_TYPE_API, byu_ws.ENCODING_NONCE,
             url=url, actor=actor_net_id, httpMethod=method)
 
@@ -57,8 +56,7 @@ def tk_delete(url, body, actor_net_id):
 
 def create_task(tk_url, description, datestr, actor_net_id):
     return tk_post(tk_url + '/tasks',
-            json.dumps({"user": actor_net_id, "description": description],
-             "date": datestr+'T00:10:00.000Z'}),
+            json.dumps({"user": actor_net_id, "description": description, "date": datestr+'T00:10:00.000Z'}),
             actor_net_id)
 
 def get_labor_task(tk_url, work_order, labor_task_name, actor_net_id):

@@ -13,36 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import fire
-import yaml
-import boto3
-import tempfile
+import requests
 
-def connect_ssm(profile='default'):
-    """
-    >>> ssm = connect_ssm()
-    """
-    session = boto3.Session(profile_name=profile)
-    ssm = session.client('ssm')
-    return ssm
-
-def load_config(prefix, var_names, profile='default'):
-    """
-    >>> config = load_config('test.tst', ['a', 'b', 'c'])
-    >>> config['a']
-    '1'
-    >>> config['b']
-    'b'
-    >>> config['c']
-    'three'
-    """
-    ssm = connect_ssm(profile)
-    config = {}
-    response = ssm.get_parameters(Names=[prefix + '.' + name for name in var_names], WithDecryption=True)
-    for parameter in response['Parameters']:
-        config[parameter['Name'].replace(prefix+'.','')] = parameter['Value']
-    return config
+def send_message(slack_url, channel, msg):
+    response = requests.post(slack_url, json={'channel': '@{}'.format(channel), 'text': msg})
+    response.raise_for_status()
 
 def test(verbose=False):
     import doctest

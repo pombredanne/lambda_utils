@@ -13,36 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import fire
-import yaml
-import boto3
-import tempfile
+import conf
+import requests
 
-def connect_ssm(profile='default'):
+def get(sn_url, username, password):
     """
-    >>> ssm = connect_ssm()
+    >>> config = conf.load_config('servicenow.prd', ['url'])
+    >>> #TODO add test
     """
-    session = boto3.Session(profile_name=profile)
-    ssm = session.client('ssm')
-    return ssm
-
-def load_config(prefix, var_names, profile='default'):
-    """
-    >>> config = load_config('test.tst', ['a', 'b', 'c'])
-    >>> config['a']
-    '1'
-    >>> config['b']
-    'b'
-    >>> config['c']
-    'three'
-    """
-    ssm = connect_ssm(profile)
-    config = {}
-    response = ssm.get_parameters(Names=[prefix + '.' + name for name in var_names], WithDecryption=True)
-    for parameter in response['Parameters']:
-        config[parameter['Name'].replace(prefix+'.','')] = parameter['Value']
-    return config
+    result = []
+    response = requests.get(sn_url, auth=(username, password))
+    response.raise_for_status()
+    result = response.json()['result']
+    return result
 
 def test(verbose=False):
     import doctest

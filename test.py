@@ -13,17 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-import doctest
 import cal
 import conf
 import fire
 import shell
+import slack
+import deploy
+import doctest
+import unittest
+import timekeeper
+import servicenow
 
 def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite(cal))
     tests.addTests(doctest.DocTestSuite(conf))
     tests.addTests(doctest.DocTestSuite(shell))
+    tests.addTests(doctest.DocTestSuite(slack))
+    tests.addTests(doctest.DocTestSuite(deploy))
+    tests.addTests(doctest.DocTestSuite(timekeeper))
+    tests.addTests(doctest.DocTestSuite(servicenow))
     return tests
 
 def test(verbosity=1):

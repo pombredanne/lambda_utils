@@ -1,3 +1,6 @@
 fire
 pyaml
 boto3
+requests
+byu_ws_sdk
+coverage

@@ -13,15 +13,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
 import os
 import fire
 import yaml
 import boto3
 import tempfile
+from base64 import b64decode
+import conf
+import shell
 
-def deploy():
-    pass
+kms = boto3.client('kms')
+
+def deploy(profile, install_deps=False):
+    """
+    No automated tests as we don't want to deploy on each test run
+    """
+    config = conf.load_config('lambda', ['upload_s3_bucket'])
+    shell.shell('mkdir -p deploy')
+    shell.shell('cp requirements.txt sam_pre.yml weekly_reports.py deploy/')
+    os.chdir('deploy')
+    if install_deps:
+        shell.shell('pip install -r requirements.txt -t .')
+    shell.shell('aws cloudformation package --template-file sam_pre.yml --output-template-file sam_post.yml --s3-bucket {} --profile {}'.format(config['upload_s3_bucket'], profile))
+    shell.shell('aws cloudformation deploy --template-file sam_post.yml --stack-name SLA-weekly-report --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --profile {}'.format(profile))
+    os.chdir('..')
 
 def test(verbose=False):
     import doctest
