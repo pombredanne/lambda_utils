@@ -17,16 +17,16 @@ from __future__ import print_function
 import fire
 import subprocess
 
-def _output(cmd):
+def output(cmd):
     """
-    >>> _output('echo "testing"')
+    >>> output('echo "testing"')
     b'testing\\n'
     """
     return subprocess.check_output(cmd, shell=True)
 
-def _shell(cmd):
+def shell(cmd):
     """
-    >>> _shell('echo ""')
+    >>> shell('echo ""')
     Running \"echo \"\"\"...
     """
     print('Running "{}"...'.format(cmd))

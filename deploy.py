@@ -24,13 +24,15 @@ import shell
 
 kms = boto3.client('kms')
 
-def deploy(profile, install_deps=False):
+def deploy(profile, install_deps=False, extra_files=[]):
     """
     No automated tests as we don't want to deploy on each test run
     """
     config = conf.load_config('lambda', ['upload_s3_bucket'])
     shell.shell('mkdir -p deploy')
-    shell.shell('cp requirements.txt sam_pre.yml weekly_reports.py deploy/')
+    shell.shell('cp *.py *.yml requirements.txt deploy/')
+    for f in extra_files:
+        shell.shell('cp {} deploy/'.format(f))
     os.chdir('deploy')
     if install_deps:
         shell.shell('pip install -r requirements.txt -t .')
