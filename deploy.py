@@ -22,8 +22,6 @@ from base64 import b64decode
 import conf
 import shell
 
-kms = boto3.client('kms')
-
 def deploy(profile, stack_name, install_deps=False, extra_files=[]):
     """
     No automated tests as we don't want to deploy on each test run
