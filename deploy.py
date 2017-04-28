@@ -24,11 +24,11 @@ import shell
 
 kms = boto3.client('kms')
 
-def deploy(profile, install_deps=False, extra_files=[]):
+def deploy(profile, stack_name, install_deps=False, extra_files=[]):
     """
     No automated tests as we don't want to deploy on each test run
     """
-    config = conf.load_config('lambda', ['upload_s3_bucket'])
+    config = conf.load_config('lambda.prd', ['upload_s3_bucket'])
     shell.shell('mkdir -p deploy')
     shell.shell('cp *.py *.yml requirements.txt deploy/')
     for f in extra_files:
@@ -37,7 +37,7 @@ def deploy(profile, install_deps=False, extra_files=[]):
     if install_deps:
         shell.shell('pip install -r requirements.txt -t .')
     shell.shell('aws cloudformation package --template-file sam_pre.yml --output-template-file sam_post.yml --s3-bucket {} --profile {}'.format(config['upload_s3_bucket'], profile))
-    shell.shell('aws cloudformation deploy --template-file sam_post.yml --stack-name SLA-weekly-report --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --profile {}'.format(profile))
+    shell.shell('aws cloudformation deploy --template-file sam_post.yml --stack-name {} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --profile {}'.format(stack_name, profile))
     os.chdir('..')
 
 def test(verbose=False):
