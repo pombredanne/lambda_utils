@@ -25,8 +25,8 @@ import requests
 from functools import wraps
 import byu_ws_sdk as byu_ws
 from datetime import datetime
-import conf
-import cal
+from . import conf
+from . import cal
 
 config = conf.load_config('ical2timekeeper.prd', ['ws_url', 'api_key', 'shared_secret'])
 test_config = conf.load_config('ical2timekeeper.tst', ['work_order', 'actor'])

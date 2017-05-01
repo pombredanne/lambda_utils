@@ -58,17 +58,28 @@ def timedelta_2_hours(duration):
     days, seconds = duration.days, duration.seconds
     hours = days * 24 + seconds / 3600.0
     return round(hours, 3)
-
+    
 def parse_date_str(date_str):
     """
     >>> parse_date_str('2017-01-01')
     datetime.datetime(2017, 1, 1, 0, 0)
     """
     return datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    
+def parse_datetime_str(date_str):
+    """
+    >>> parse_datetime_str('2017-01-01T11:30:00.000-0600')
+    datetime.datetime(2017, 1, 1, 11, 30, tzinfo=datetime.timezone(datetime.timedelta(-1, 64800)))
+    """
+    return datetime.datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.000%z')
 
 def calc_duration(start_date_str, end_date_str):
-
-    return timedelta_2_hours(parse_date_str(end_date_str) - parse_date_str(start_date_str))
+    """
+    returns the duration in hours between 2 date strings
+    >>> calc_duration('2017-01-01T11:30:00.000-0600', '2017-01-02T11:34:00.000-0600')
+    24.067
+    """
+    return timedelta_2_hours(parse_datetime_str(end_date_str) - parse_datetime_str(start_date_str))
 
 def add_days_to_date_str(date_str, num_days):
     """
