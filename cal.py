@@ -16,7 +16,7 @@
 from __future__ import print_function
 import fire
 import datetime
-from dateutil.relativedelta import relativedelta, SA
+from dateutil.relativedelta import relativedelta, SA, FR
 
 def date_str_2_obj(date_str):
     """
@@ -34,6 +34,21 @@ def get_last_saturday_str():
     True
     """
     return (datetime.datetime.now() + relativedelta(weekday=SA(-1))).strftime('%Y-%m-%d')
+
+def last_friday_str():
+    """
+    >>> output = last_friday_str()
+    >>> len(output) == 10
+    True
+    >>> output.startswith('2')
+    True
+    >>> date_str_2_obj(output) < datetime.datetime.now()
+    True
+    >>> date_str_2_obj(output).strftime('%a')
+    'Fri'
+    """
+    last_friday = datetime.datetime.now() + relativedelta(weekday=FR(-1))
+    return last_friday.strftime('%Y-%m-%d')
 
 def timedelta_2_hours(duration):
     """
