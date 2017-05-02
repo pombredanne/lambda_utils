@@ -30,7 +30,7 @@ def connect_ssm(profile=''):
         ssm = boto3.client('ssm')
     return ssm
 
-def load_config(prefix, var_names, profile=''):
+def load_config(prefix, var_names, profile='', separator='.'):
     """
     >>> config = load_config('test.tst', ['a', 'b', 'c'])
     >>> config['a']
@@ -42,9 +42,9 @@ def load_config(prefix, var_names, profile=''):
     """
     ssm = connect_ssm(profile)
     config = {}
-    response = ssm.get_parameters(Names=[prefix + '.' + name for name in var_names], WithDecryption=True)
+    response = ssm.get_parameters(Names=[prefix + separator + name for name in var_names], WithDecryption=True)
     for parameter in response['Parameters']:
-        config[parameter['Name'].replace(prefix+'.','')] = parameter['Value']
+        config[parameter['Name'].replace(prefix+separator,'')] = parameter['Value']
     return config
 
 def test(verbose=False):
