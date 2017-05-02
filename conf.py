@@ -19,15 +19,18 @@ import yaml
 import boto3
 import tempfile
 
-def connect_ssm(profile='default'):
+def connect_ssm(profile=''):
     """
     >>> ssm = connect_ssm()
     """
-    session = boto3.Session(profile_name=profile)
-    ssm = session.client('ssm')
+    if profile:
+        session = boto3.Session(profile_name=profile)
+        ssm = session.client('ssm')
+    else:
+        ssm = boto3.client('ssm')
     return ssm
 
-def load_config(prefix, var_names, profile='default'):
+def load_config(prefix, var_names, profile=''):
     """
     >>> config = load_config('test.tst', ['a', 'b', 'c'])
     >>> config['a']
