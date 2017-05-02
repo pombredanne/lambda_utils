@@ -28,8 +28,8 @@ from datetime import datetime
 from . import conf
 from . import cal
 
-config = conf.load_config('ical2timekeeper.prd', ['ws_url', 'api_key', 'shared_secret'])
-test_config = conf.load_config('ical2timekeeper.tst', ['work_order', 'actor'])
+config = conf.load_config('ical2timekeeper-prd-function', ['ws_url', 'api_key', 'shared_secret'], separator='-')
+test_config = conf.load_config('ical2timekeeper-prd-function-tst', ['work_order', 'actor'], separator='-')
 
 # Generic HTTP functions
 
