@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 import fire
 import requests
 
@@ -31,14 +32,30 @@ def convert_userid_to_real_name(access_token, userid):
     >>> convert_userid_to_real_name(at['slack_access_token'], 'U11111111')
     Traceback (most recent call last):
     ...
-    Exception: user_not_found
+    Exception: user_not_found: U11111111
     """
+    if not isinstance(userid, str):
+        userid = userid.group(0)
+        userid = userid.replace('<@', '').replace('>', '')
     response = requests.get('https://slack.com/api/users.info?token={}&user={}&pretty=1'.format(access_token, userid))
     response.raise_for_status()
     data = response.json()
     if not data['ok']:
-        raise Exception(data['error'])
+        raise Exception(data['error'] + ": " + userid)
     return data['user']['real_name']
+
+def decode_message(access_token: str, message: str):
+    """
+    >>> import conf
+    >>> config = conf.load_config('lambda_utils.tst', ['slack_encoded_message', 'slack_decoded_message'])
+    >>> at = conf.load_config('oit-weekly-reports-prd-function', ['slack_access_token'], separator='-')
+    >>> config['slack_decoded_message'] == decode_message(at['slack_access_token'], config['slack_encoded_message'])
+    True
+    """
+    message = re.sub(r'<@(.*?)>', lambda x: convert_userid_to_real_name(access_token, x), message)
+    message = re.sub(r'<#.*?\|(.*?)>', r'#\1', message)
+    return message
+
 
 def test(verbose=False):
     import doctest
