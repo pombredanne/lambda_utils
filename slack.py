@@ -56,7 +56,6 @@ def decode_message(access_token: str, message: str):
     message = re.sub(r'<#.*?\|(.*?)>', r'#\1', message)
     return message
 
-
 def test(verbose=False):
     import doctest
     doctest.testmod(verbose=verbose)
