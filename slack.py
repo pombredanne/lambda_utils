@@ -20,6 +20,26 @@ def send_message(slack_url, channel, msg):
     response = requests.post(slack_url, json={'channel': '@{}'.format(channel), 'text': msg})
     response.raise_for_status()
 
+def convert_userid_to_real_name(access_token, userid):
+    """
+    >>> import conf
+    >>> sui = conf.load_config('lambda_utils.tst', ['slack_userid'])
+    >>> at = conf.load_config('oit-weekly-reports-prd-function', ['slack_access_token'], separator='-')
+    >>> real_name = convert_userid_to_real_name(at['slack_access_token'], sui['slack_userid'])
+    >>> len(real_name.split(' '))
+    2
+    >>> convert_userid_to_real_name(at['slack_access_token'], 'U11111111')
+    Traceback (most recent call last):
+    ...
+    Exception: user_not_found
+    """
+    response = requests.get('https://slack.com/api/users.info?token={}&user={}&pretty=1'.format(access_token, userid))
+    response.raise_for_status()
+    data = response.json()
+    if not data['ok']:
+        raise Exception(data['error'])
+    return data['user']['real_name']
+
 def test(verbose=False):
     import doctest
     doctest.testmod(verbose=verbose)
